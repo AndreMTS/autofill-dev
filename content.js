@@ -101,7 +101,20 @@ function gerarTelefone() {
 
 function gerarEmail(nome, sobrenome) {
   const dominios = ["gmail.com", "hotmail.com", "yahoo.com", "outlook.com"];
-  return `${nome.toLowerCase()}.${sobrenome.toLowerCase()}${Math.floor(Math.random() * 100)}@${dominios[Math.floor(Math.random() * dominios.length)]}`;
+  
+  // Remove acentos e converte para minúsculas
+  const removerAcentos = (str) => str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  
+  // Remove pontuação e espaços, converte para minúsculas
+  const limparNome = (str) => removerAcentos(str.toLowerCase()).replace(/[^\w\s]/gi, '').replace(/\s+/g, '');
+  
+  const nomeEmail = limparNome(nome);
+  const sobrenomeEmail = limparNome(sobrenome);
+  
+  const numeroAleatorio = Math.floor(Math.random() * 100);
+  const dominio = dominios[Math.floor(Math.random() * dominios.length)];
+  
+  return `${nomeEmail}${sobrenomeEmail}${numeroAleatorio}@${dominio}`;
 }
 
 function gerarCPF() {
