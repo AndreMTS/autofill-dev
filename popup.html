@@ -1,19 +1,39 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Preenchedor de Formulários</title>
-  <style>
-    body { width: 300px; padding: 10px; }
-    label { display: block; margin-bottom: 5px; }
-  </style>
+  <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-  <h2>Selecione os campos para preencher:</h2>
-  <label><input type="checkbox" id="nomeCompleto" checked> Nome Completo</label>
-  <label><input type="checkbox" id="email" checked> Email</label>
-  <label><input type="checkbox" id="telefone" checked> Telefone</label>
-  <label><input type="checkbox" id="cpf" checked> CPF</label>
-  <button id="preencher">Preencher Formulário</button>
+  <header>
+    <h2>Preenchedor de Formulários</h2>
+    <p class="developer-info">
+      Desenvolvido por [AndreMTS] | 
+      <a href="https://github.com/AndreMTS/autofill-dev" target="_blank">GitHub do Projeto</a>
+    </p>
+  </header>
+  <div class="checkbox-container">
+    <label><input type="checkbox" id="nomeCompleto" checked> Nome Completo</label>
+    <label><input type="checkbox" id="dataNascimento" checked> Data de Nascimento</label>
+    <label><input type="checkbox" id="nomePai" checked> Nome do Pai</label>
+    <label><input type="checkbox" id="nomeMae" checked> Nome da Mãe</label>
+    <label><input type="checkbox" id="rg" checked> RG</label>
+    <label><input type="checkbox" id="dataEmissaoRG" checked> Data Emissão RG</label>
+    <label><input type="checkbox" id="cnh" checked> CNH</label>
+    <label><input type="checkbox" id="validadeCNH" checked> Validade CNH</label>
+    <label><input type="checkbox" id="email" checked> E-mail</label>
+    <label><input type="checkbox" id="celular" checked> Celular</label>
+    <label><input type="checkbox" id="telefone" checked> Telefone</label>
+    <label><input type="checkbox" id="site" checked> Site</label>
+    <label><input type="checkbox" id="cpf" checked> CPF</label>
+    <label><input type="checkbox" id="cep" checked> CEP</label>
+  </div>
+  <div class="button-container">
+    <button id="preencher">Preencher</button>
+    <button id="limpar">Limpar</button>
+  </div>
   <script src="popup.js"></script>
 </body>
 </html>
