@@ -40,6 +40,15 @@ async function gerarDadosFicticios() {
       logradouro: endereco.streetName,
       numero: Math.floor(Math.random() * 1000) + 1,
       complemento: "casa",
+      razaoSocial: gerarRazaoSocial(),
+      nomeFantasia: gerarNomeFantasia(),
+      cnpj: gerarCNPJ(),
+      ufInscricaoEstadual: endereco.State.abbreviation,
+      inscricaoEstadual: gerarInscricaoEstadual(),
+      inscricaoMunicipal: gerarInscricaoMunicipal(),
+      fundacao: gerarDataFundacao(),
+      referenciasComerciais: gerarReferenciasComerciais(),
+      referenciasBancarias: gerarReferenciasBancarias(),
       bairro: endereco.district,
       cidade: endereco.City.name,
       uf: endereco.State.abbreviation
@@ -131,11 +140,77 @@ function gerarCPF() {
   return [...numeros, digito1, digito2].join('').replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
 }
 
+function gerarRazaoSocial() {
+  const prefixos = ["Indústria", "Comércio", "Serviços", "Tecnologia", "Consultoria"];
+  const sufixos = ["Ltda", "S.A.", "MEI", "EIRELI", "Sociedade Simples"];
+  const nomes = ["Silva", "Santos", "Oliveira", "Ferreira", "Rodrigues", "Almeida", "Pereira", "Lima"];
+  
+  const prefixo = prefixos[Math.floor(Math.random() * prefixos.length)];
+  const nome = nomes[Math.floor(Math.random() * nomes.length)];
+  const sufixo = sufixos[Math.floor(Math.random() * sufixos.length)];
+  
+  return `${prefixo} ${nome} ${sufixo}`;
+}
+
+function gerarNomeFantasia() {
+  const prefixos = ["Tech", "Inova", "Mega", "Super", "Ultra"];
+  const nomes = ["Silva", "Santos", "Oliveira", "Ferreira", "Rodrigues", "Almeida", "Pereira", "Lima"];
+  const prefixo = prefixos[Math.floor(Math.random() * prefixos.length)];
+  const nome = nomes[Math.floor(Math.random() * nomes.length)];
+  return `${prefixo} ${nome}`;
+}
+
+function gerarCNPJ() {
+  const gerarDigito = (digitos) => {
+    let soma = digitos.reduce((acc, cur, idx) => acc + cur * ((idx % 8) + 2), 0);
+    let resto = soma % 11;
+    return resto < 2 ? 0 : 11 - resto;
+  };
+
+  const numeros = Array(12).fill().map(() => Math.floor(Math.random() * 10));
+  const digito1 = gerarDigito(numeros);
+  const digito2 = gerarDigito([...numeros, digito1]);
+
+  return [...numeros, digito1, digito2].join('').replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5');
+}
+
+function gerarInscricaoEstadual() {
+  return Array(9).fill().map(() => Math.floor(Math.random() * 10)).join('');
+}
+
+function gerarInscricaoMunicipal() {
+  return Array(11).fill().map(() => Math.floor(Math.random() * 10)).join('');
+}
+
+function gerarDataFundacao() {
+  const inicio = new Date(1950, 0, 1).getTime();
+  const fim = new Date().getTime();
+  const data = new Date(inicio + Math.random() * (fim - inicio));
+  return `${data.getDate().toString().padStart(2, '0')}/${(data.getMonth() + 1).toString().padStart(2, '0')}/${data.getFullYear()}`;
+}
+
+function gerarReferenciasComerciais() {
+  const empresas = ["Empresa A", "Empresa B", "Empresa C", "Empresa D", "Empresa E"];
+  return Array(3).fill().map(() => ({
+    nome: empresas[Math.floor(Math.random() * empresas.length)],
+    telefone: gerarTelefone()
+  }));
+}
+
+function gerarReferenciasBancarias() {
+  const bancos = ["Banco do Brasil", "Itaú", "Bradesco", "Santander", "Caixa Econômica Federal"];
+  return Array(2).fill().map(() => ({
+    banco: bancos[Math.floor(Math.random() * bancos.length)],
+    agencia: Math.floor(Math.random() * 9000) + 1000,
+    conta: Math.floor(Math.random() * 90000) + 10000
+  }));
+}
+
 async function preencherFormulario(opcoes) {
     const dados = await gerarDadosFicticios();
   
   const campos = {
-    nomeCompleto: ['nome completo'],
+    nomeCompleto: ['nome completo', 'Nome'],
     dataNascimento: ['nascimento', 'data nascimento', 'data de nascimento'],
     nomePai: ['pai', 'nome do pai'],
     nomeMae: ['mãe', 'nome da mãe'],
@@ -143,8 +218,8 @@ async function preencherFormulario(opcoes) {
     dataEmissaoRG: ['data emissão rg', 'emissão rg'],
     cnh: ['cnh', 'carteira de motorista'],
     validadeCNH: ['validade cnh', 'vencimento cnh'],
-    email: ['e-mail', 'email'],
-    celular: ['celular', 'telemóvel'],
+    email: ['e-mail', 'E-mail', 'Email', 'email'],
+    celular: ['celular', 'Celular', 'telemóvel'],
     telefone: ['telefone', 'fone'],
     site: ['site', 'website'],
     cpf: ['cpf'],
@@ -154,7 +229,16 @@ async function preencherFormulario(opcoes) {
     bairro: ['bairro'],
     complemento: ['complemento'],
     cidade: ['cidade', 'município'],
-    uf: ['uf', 'estado']
+    uf: ['uf', 'estado'],
+    razaoSocial: ['razão social'],
+    nomeFantasia: ['nome fantasia'],
+    cnpj: ['cnpj'],
+    ufInscricaoEstadual: ['uf inscrição estadual', 'ie uf'],
+    inscricaoEstadual: ['inscrição estadual', 'ie'],
+    inscricaoMunicipal: ['inscrição municipal', 'im'],
+    fundacao: ['fundação', 'data de fundação'],
+    referenciasComerciais: ['referências comerciais'],
+    referenciasBancarias: ['referências bancárias']
   };
 
   for (const [campo, termos] of Object.entries(campos)) {
@@ -177,6 +261,25 @@ async function preencherFormulario(opcoes) {
 
 function encontrarInput(termos) {
   for (const termo of termos) {
+    // Função auxiliar para verificar se o texto corresponde ao termo
+    const matchText = (text, term) => text.toLowerCase().includes(term.toLowerCase());
+
+    // Busca por elementos .q-field que contêm o termo no label ou aria-label
+    const qFields = Array.from(document.querySelectorAll('.q-field'));
+    for (const qField of qFields) {
+      const label = qField.querySelector('.q-field__label');
+      const input = qField.querySelector('input.q-field__native');
+      
+      if (input && (
+        (label && matchText(label.textContent, termo)) ||
+        (input.getAttribute('aria-label') && matchText(input.getAttribute('aria-label'), termo))
+      )) {
+        console.log(`Campo encontrado para termo: ${termo}`);
+        return input;
+      }
+    }
+
+    // Seletores anteriores como fallback
     const seletores = [
       `input[aria-label="${termo}" i]`,
       `input[placeholder="${termo}" i]`,
@@ -187,44 +290,92 @@ function encontrarInput(termos) {
       `input[name*="${termo}" i]`,
       `input[id*="${termo}" i]`,
       `input.q-field__native[type="text"]`,
-      `input.q-field__native[type="tel"]`
+      `input.q-field__native[type="tel"]`,
+      `input[data-test*="${termo}" i]`
     ];
 
     for (const seletor of seletores) {
       const input = document.querySelector(seletor);
-      if (input) return input;
+      if (input) {
+        console.log(`Campo encontrado para termo: ${termo}, seletor: ${seletor}`);
+        return input;
+      }
     }
 
-    const inputs = document.querySelectorAll('input[type="text"], input[type="date"], input[type="email"], input[type="tel"], input[type="url"]');
-    for (const input of inputs) {
-      const ariaLabel = input.getAttribute('aria-label');
-      const placeholder = input.getAttribute('placeholder');
-      if (ariaLabel?.toLowerCase() === termo || 
-          placeholder?.toLowerCase() === termo ||
-          ariaLabel?.toLowerCase().includes(termo) || 
-          placeholder?.toLowerCase().includes(termo)) {
-        return input;
+    // Busca específica para comboboxes
+    const comboboxes = document.querySelectorAll('input[role="combobox"]');
+    for (const combobox of comboboxes) {
+      if (matchText(combobox.getAttribute('aria-label'), termo)) {
+        console.log(`Combobox encontrado para termo: ${termo}`);
+        return combobox;
+      }
+    }
+
+    // Busca adicional para campos com label
+    const labels = document.querySelectorAll('label, .q-field__label');
+    for (const label of labels) {
+      if (label.textContent.toLowerCase().includes(termo.toLowerCase())) {
+        const input = label.closest('.q-field').querySelector('input');
+        if (input) return input;
       }
     }
   }
 
+  console.log(`Nenhum campo encontrado para termos: ${termos.join(', ')}`);
   return null;
 }
 
 function preencherInput(input, valor) {
-  if (input.value && input.value.trim() !== '') {
-    console.log(`Campo já preenchido com: ${input.value}. Pulando...`);
-    return;
+  let valorFormatado = valor;
+
+  // Tratamento especial para referências comerciais e bancárias
+  if (Array.isArray(valor) && valor.length > 0 && typeof valor[0] === 'object') {
+    valorFormatado = valor.map(item => {
+      if (item.nome && item.telefone) {
+        return `${item.nome}: ${item.telefone}`;
+      } else if (item.banco && item.agencia && item.conta) {
+        return `${item.banco} - Ag: ${item.agencia}, Conta: ${item.conta}`;
+      }
+      return JSON.stringify(item);
+    }).join('\n');
   }
 
-  input.value = valor;
-  input.dispatchEvent(new Event('input', { bubbles: true }));
-  input.dispatchEvent(new Event('change', { bubbles: true }));
-  input.dispatchEvent(new Event('blur', { bubbles: true }));
-  
+  // Definir o valor
+  input.value = valorFormatado;
+
+  // Disparar eventos
+  ['input', 'change', 'blur', 'focus'].forEach(eventType => {
+    input.dispatchEvent(new Event(eventType, { bubbles: true }));
+  });
+
+  // Simular digitação para comboboxes
+  if (input.getAttribute('role') === 'combobox') {
+    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+    input.dispatchEvent(new KeyboardEvent('keyup', { key: 'Enter', bubbles: true }));
+  }
+
+  // Para frameworks reativos
   if (input._valueTracker) {
     input._valueTracker.setValue('');
   }
+
+  // Atualizar o modelo do Quasar, se aplicável
+  const qField = input.closest('.q-field');
+  if (qField) {
+    const vueComponent = qField.__vue__;
+    if (vueComponent && typeof vueComponent.updateValue === 'function') {
+      vueComponent.updateValue(valorFormatado);
+    }
+  }
+
+  // Forçar atualização do valor após um curto delay
+  setTimeout(() => {
+    input.value = valorFormatado;
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+  }, 100);
+
+  console.log(`Valor definido para ${input.getAttribute('aria-label') || input.name}: ${valorFormatado}`);
 }
 
 function preencherCamposEndereco(dados) {
@@ -267,7 +418,16 @@ function limparFormulario() {
     bairro: ['bairro'],
     complemento: ['complemento'],
     cidade: ['cidade', 'município'],
-    uf: ['uf', 'estado']
+    uf: ['uf', 'estado'],
+    razaoSocial: ['razão social'],
+    nomeFantasia: ['nome fantasia'],
+    cnpj: ['cnpj'],
+    ufInscricaoEstadual: ['uf inscrição estadual', 'ie uf'],
+    inscricaoEstadual: ['inscrição estadual', 'ie'],
+    inscricaoMunicipal: ['inscrição municipal', 'im'],
+    fundacao: ['fundação', 'data de fundação'],
+    referenciasComerciais: ['referências comerciais'],
+    referenciasBancarias: ['referências bancárias']
   };
 
   for (const termos of Object.values(campos)) {

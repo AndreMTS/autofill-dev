@@ -1,5 +1,8 @@
 document.getElementById('preencher').addEventListener('click', () => {
     const opcoes = {
+        razaoSocial: document.getElementById('razaoSocial').checked,
+        nomeFantasia: document.getElementById('nomeFantasia').checked,
+        cnpj: document.getElementById('cnpj').checked,
         nomeCompleto: document.getElementById('nomeCompleto').checked,
         dataNascimento: document.getElementById('dataNascimento').checked,
         nomePai: document.getElementById('nomePai').checked,
@@ -13,7 +16,13 @@ document.getElementById('preencher').addEventListener('click', () => {
         telefone: document.getElementById('telefone').checked,
         site: document.getElementById('site').checked,
         cpf: document.getElementById('cpf').checked,
-        cep: document.getElementById('cep').checked
+        cep: document.getElementById('cep').checked,
+        ufInscricaoEstadual: document.getElementById('ufInscricaoEstadual').checked,
+        inscricaoEstadual: document.getElementById('inscricaoEstadual').checked,
+        inscricaoMunicipal: document.getElementById('inscricaoMunicipal').checked,
+        fundacao: document.getElementById('fundacao').checked,
+        referenciasComerciais: document.getElementById('referenciasComerciais').checked,
+        referenciasBancarias: document.getElementById('referenciasBancarias').checked
     };
 
     chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
