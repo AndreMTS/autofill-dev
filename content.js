@@ -109,7 +109,7 @@ function gerarTelefone() {
 }
 
 function gerarEmail(nome, sobrenome) {
-  const dominios = ["gmail.com", "hotmail.com", "yahoo.com", "outlook.com"];
+  const dominios = ["teste.com", "test.com"];
   
   // Remove acentos e converte para minúsculas
   const removerAcentos = (str) => str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
@@ -210,7 +210,7 @@ async function preencherFormulario(opcoes) {
     const dados = await gerarDadosFicticios();
   
   const campos = {
-    nomeCompleto: ['nome completo', 'Nome'],
+    nomeCompleto: ['Nome Completo'],
     dataNascimento: ['nascimento', 'data nascimento', 'data de nascimento'],
     nomePai: ['pai', 'nome do pai'],
     nomeMae: ['mãe', 'nome da mãe'],
@@ -243,9 +243,9 @@ async function preencherFormulario(opcoes) {
 
   for (const [campo, termos] of Object.entries(campos)) {
     if (opcoes[campo]) {
-      const input = encontrarInput(termos);
+      const input = encontrarInput(termos, campo);
       if (input) {
-        preencherInput(input, dados[campo]);
+        preencherInput(input, dados[campo], campo);
         console.log(`Campo ${campo} preenchido com: ${dados[campo]}`);
         
         // Se for o CEP, aguarda um pouco e tenta preencher os campos de endereço
@@ -259,7 +259,9 @@ async function preencherFormulario(opcoes) {
   }
 }
 
-function encontrarInput(termos) {
+function encontrarInput(termos, campoAtual) {
+  const camposPreenchidos = new Set();
+
   for (const termo of termos) {
     // Função auxiliar para verificar se o texto corresponde ao termo
     const matchText = (text, term) => text.toLowerCase().includes(term.toLowerCase());
@@ -270,11 +272,12 @@ function encontrarInput(termos) {
       const label = qField.querySelector('.q-field__label');
       const input = qField.querySelector('input.q-field__native');
       
-      if (input && (
+      if (input && !camposPreenchidos.has(input) && (
         (label && matchText(label.textContent, termo)) ||
         (input.getAttribute('aria-label') && matchText(input.getAttribute('aria-label'), termo))
       )) {
-        console.log(`Campo encontrado para termo: ${termo}`);
+        console.log(`Campo encontrado para ${campoAtual}: ${termo}`);
+        camposPreenchidos.add(input);
         return input;
       }
     }
@@ -296,8 +299,9 @@ function encontrarInput(termos) {
 
     for (const seletor of seletores) {
       const input = document.querySelector(seletor);
-      if (input) {
-        console.log(`Campo encontrado para termo: ${termo}, seletor: ${seletor}`);
+      if (input && !camposPreenchidos.has(input)) {
+        console.log(`Campo encontrado para ${campoAtual}: ${termo}, seletor: ${seletor}`);
+        camposPreenchidos.add(input);
         return input;
       }
     }
@@ -316,16 +320,25 @@ function encontrarInput(termos) {
     for (const label of labels) {
       if (label.textContent.toLowerCase().includes(termo.toLowerCase())) {
         const input = label.closest('.q-field').querySelector('input');
-        if (input) return input;
+        if (input && !camposPreenchidos.has(input)) {
+          camposPreenchidos.add(input);
+          return input;
+        }
       }
     }
   }
 
-  console.log(`Nenhum campo encontrado para termos: ${termos.join(', ')}`);
+  console.log(`Nenhum campo encontrado para ${campoAtual}: ${termos.join(', ')}`);
   return null;
 }
 
-function preencherInput(input, valor) {
+function preencherInput(input, valor, campo) {
+  // Verifica se o campo já está preenchido
+  if (input.value && input.value.trim() !== '') {
+    console.log(`Campo ${campo} já preenchido com: ${input.value}. Pulando...`);
+    return;
+  }
+
   let valorFormatado = valor;
 
   // Tratamento especial para referências comerciais e bancárias
@@ -375,7 +388,7 @@ function preencherInput(input, valor) {
     input.dispatchEvent(new Event('change', { bubbles: true }));
   }, 100);
 
-  console.log(`Valor definido para ${input.getAttribute('aria-label') || input.name}: ${valorFormatado}`);
+  console.log(`Valor definido para ${campo}: ${valorFormatado}`);
 }
 
 function preencherCamposEndereco(dados) {
@@ -389,9 +402,9 @@ function preencherCamposEndereco(dados) {
   };
 
   for (const [campo, termos] of Object.entries(campos)) {
-    const input = encontrarInput(termos);
+    const input = encontrarInput(termos, campo);
     if (input && (!input.value || input.value.trim() === '')) {
-      preencherInput(input, dados[campo]);
+      preencherInput(input, dados[campo], campo);
       console.log(`Campo ${campo} preenchido com: ${dados[campo]}`);
     }
   }
@@ -431,7 +444,7 @@ function limparFormulario() {
   };
 
   for (const termos of Object.values(campos)) {
-    const input = encontrarInput(termos);
+    const input = encontrarInput(termos, '');
     if (input) {
       input.value = '';
       input.dispatchEvent(new Event('input', { bubbles: true }));

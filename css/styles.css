@@ -7,17 +7,21 @@ body {
   }
   header {
     margin-bottom: 15px;
+    text-align: center;
+    padding: 10px 0;
   }
   h2 {
     color: #333;
     font-size: 18px;
     margin: 0 0 5px 0;
     text-align: center;
+    margin-bottom: 10px;
   }
   .developer-info {
-    font-size: 12px;
+    font-size: 0.9em;
     color: #666;
     text-align: center;
+    margin-top: 10px;
     margin: 0 0 15px 0;
   }
   .developer-info a {
@@ -71,4 +75,32 @@ body {
   }
   button:active {
     transform: scale(0.95);
+  }
+  
+  .checkbox-container label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+  }
+
+  .checkbox-container input[type="checkbox"] {
+    margin-right: 5px;
+  }
+
+  .checkbox-container label::before {
+    content: attr(data-emoji);
+    margin-right: 5px;
+    font-size: 1.2em;
+  }
+
+  .button-container button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .button-container button::before {
+    content: attr(data-emoji);
+    margin-right: 5px;
+    font-size: 1.2em;
   }
