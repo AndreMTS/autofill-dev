@@ -1,79 +1,79 @@
 async function gerarDadosFicticios() {
-    const nomes = [
-        "João", "Maria", "Pedro", "Ana", "Carlos", "Lúcia", "Antônio", "Fernanda",
-        "Paulo", "Juliana", "Rafael", "Camila", "Marcos", "Beatriz", "José", "Cláudia",
-        "Gabriel", "Bruna", "Lucas", "Patrícia", "Ricardo", "Aline", "Thiago", "Roberta",
-        "Felipe", "Vanessa", "Marcelo", "Bianca", "Rodrigo", "Sônia", "Leandro", "Carla",
-        "Bruno", "Rita", "Gustavo", "Cecília", "Fábio", "Renata", "Igor", "Elaine",
-        "Diego", "Viviane", "Renato", "Mariana", "Jorge", "Sandra", "Alexandre", "Eliane",
-        "Fernando", "Luciana", "Eduardo", "Michele", "André", "Simone", "Henrique", "Cristiane",
-        "César", "Raquel", "Wesley", "Gabriela", "Murilo", "Tânia", "Danilo", "Tatiana",
-        "Caio", "Verônica", "Vitor", "Regina", "Evandro", "Lara", "Rogério", "Débora",
-        "Otávio", "Juliane", "Samuel", "Denise", "Vladimir", "Natália", "Luiz", "Helena",
-        "Flávio", "Lorena", "Robson", "Adriana", "Elias", "Joana", "Sérgio", "Letícia",
-        "Maurício", "Cátia", "Claudio", "Ingrid", "Brás", "Valéria", "Mateus", "Rosa",
-        "Ivan", "Marta", "Jonas", "Solange", "Davi", "Elisa", "Guilherme", "Yasmin"
-      ];
-    const sobrenomes = ["Silva", "Santos", "Oliveira", "Souza", "Rodrigues", "Ferreira", "Almeida", "Pereira"];
-    
-    const nome = nomes[Math.floor(Math.random() * nomes.length)];
-    const sobrenome = sobrenomes[Math.floor(Math.random() * sobrenomes.length)];
-    const nomeCompleto = `${nome} ${sobrenome}`;
-  
-    const endereco = await buscarCepAleatorio();
-  
+  const nomes = [
+    "João", "Maria", "Pedro", "Ana", "Carlos", "Lúcia", "Antônio", "Fernanda",
+    "Paulo", "Juliana", "Rafael", "Camila", "Marcos", "Beatriz", "José", "Cláudia",
+    "Gabriel", "Bruna", "Lucas", "Patrícia", "Ricardo", "Aline", "Thiago", "Roberta",
+    "Felipe", "Vanessa", "Marcelo", "Bianca", "Rodrigo", "Sônia", "Leandro", "Carla",
+    "Bruno", "Rita", "Gustavo", "Cecília", "Fábio", "Renata", "Igor", "Elaine",
+    "Diego", "Viviane", "Renato", "Mariana", "Jorge", "Sandra", "Alexandre", "Eliane",
+    "Fernando", "Luciana", "Eduardo", "Michele", "André", "Simone", "Henrique", "Cristiane",
+    "César", "Raquel", "Wesley", "Gabriela", "Murilo", "Tânia", "Danilo", "Tatiana",
+    "Caio", "Verônica", "Vitor", "Regina", "Evandro", "Lara", "Rogério", "Débora",
+    "Otávio", "Juliane", "Samuel", "Denise", "Vladimir", "Natália", "Luiz", "Helena",
+    "Flávio", "Lorena", "Robson", "Adriana", "Elias", "Joana", "Sérgio", "Letícia",
+    "Maurício", "Cátia", "Claudio", "Ingrid", "Brás", "Valéria", "Mateus", "Rosa",
+    "Ivan", "Marta", "Jonas", "Solange", "Davi", "Elisa", "Guilherme", "Yasmin"
+  ];
+  const sobrenomes = ["Silva", "Santos", "Oliveira", "Souza", "Rodrigues", "Ferreira", "Almeida", "Pereira"];
+
+  const nome = nomes[Math.floor(Math.random() * nomes.length)];
+  const sobrenome = sobrenomes[Math.floor(Math.random() * sobrenomes.length)];
+  const nomeCompleto = `${nome} ${sobrenome}`;
+
+  const endereco = await buscarCepAleatorio();
+
+  return {
+    nomeCompleto: nomeCompleto,
+    dataNascimento: gerarDataNascimento(),
+    nomePai: `${nomes[Math.floor(Math.random() * nomes.length)]} ${sobrenomes[Math.floor(Math.random() * sobrenomes.length)]}`,
+    nomeMae: `${nomes[Math.floor(Math.random() * nomes.length)]} ${sobrenomes[Math.floor(Math.random() * sobrenomes.length)]}`,
+    rg: gerarRG(),
+    dataEmissaoRG: gerarDataEmissao(),
+    cnh: gerarCNH(),
+    validadeCNH: gerarDataFutura(),
+    email: gerarEmail(nome, sobrenome),
+    celular: gerarTelefone(),
+    telefone: gerarTelefone(),
+    site: `www.${nome.toLowerCase()}${sobrenome.toLowerCase()}.com.br`,
+    cpf: gerarCPF(),
+    cep: endereco.id.toString().padStart(8, '0'),
+    logradouro: endereco.streetName,
+    numero: Math.floor(Math.random() * 1000) + 1,
+    complemento: "casa",
+    razaoSocial: gerarRazaoSocial(),
+    nomeFantasia: gerarNomeFantasia(),
+    cnpj: gerarCNPJ(),
+    ufInscricaoEstadual: endereco.State.abbreviation,
+    inscricaoEstadual: gerarInscricaoEstadual(),
+    inscricaoMunicipal: gerarInscricaoMunicipal(),
+    fundacao: gerarDataFundacao(),
+    referenciasComerciais: gerarReferenciasComerciais(),
+    referenciasBancarias: gerarReferenciasBancarias(),
+    bairro: endereco.district,
+    cidade: endereco.City.name,
+    uf: endereco.State.abbreviation
+  };
+}
+
+async function buscarCepAleatorio() {
+  try {
+    const response = await fetch('https://api.qualcep.com.br/zipcode/random?');
+    if (!response.ok) {
+      throw new Error('Falha ao buscar CEP aleatório');
+    }
+    return await response.json();
+  } catch (error) {
+    console.error('Erro ao buscar CEP:', error);
+    // Retorna um endereço padrão em caso de erro
     return {
-      nomeCompleto: nomeCompleto,
-      dataNascimento: gerarDataNascimento(),
-      nomePai: `${nomes[Math.floor(Math.random() * nomes.length)]} ${sobrenomes[Math.floor(Math.random() * sobrenomes.length)]}`,
-      nomeMae: `${nomes[Math.floor(Math.random() * nomes.length)]} ${sobrenomes[Math.floor(Math.random() * sobrenomes.length)]}`,
-      rg: gerarRG(),
-      dataEmissaoRG: gerarDataEmissao(),
-      cnh: gerarCNH(),
-      validadeCNH: gerarDataFutura(),
-      email: gerarEmail(nome, sobrenome),
-      celular: gerarTelefone(),
-      telefone: gerarTelefone(),
-      site: `www.${nome.toLowerCase()}${sobrenome.toLowerCase()}.com.br`,
-      cpf: gerarCPF(),
-      cep: endereco.id.toString().padStart(8, '0'),
-      logradouro: endereco.streetName,
-      numero: Math.floor(Math.random() * 1000) + 1,
-      complemento: "casa",
-      razaoSocial: gerarRazaoSocial(),
-      nomeFantasia: gerarNomeFantasia(),
-      cnpj: gerarCNPJ(),
-      ufInscricaoEstadual: endereco.State.abbreviation,
-      inscricaoEstadual: gerarInscricaoEstadual(),
-      inscricaoMunicipal: gerarInscricaoMunicipal(),
-      fundacao: gerarDataFundacao(),
-      referenciasComerciais: gerarReferenciasComerciais(),
-      referenciasBancarias: gerarReferenciasBancarias(),
-      bairro: endereco.district,
-      cidade: endereco.City.name,
-      uf: endereco.State.abbreviation
+      id: 1310200,
+      streetName: "Avenida Paulista",
+      district: "Bela Vista",
+      City: { name: "São Paulo" },
+      State: { abbreviation: "SP" }
     };
   }
-
-  async function buscarCepAleatorio() {
-    try {
-      const response = await fetch('https://api.qualcep.com.br/zipcode/random?');
-      if (!response.ok) {
-        throw new Error('Falha ao buscar CEP aleatório');
-      }
-      return await response.json();
-    } catch (error) {
-      console.error('Erro ao buscar CEP:', error);
-      // Retorna um endereço padrão em caso de erro
-      return {
-        id: 1310200,
-        streetName: "Avenida Paulista",
-        district: "Bela Vista",
-        City: { name: "São Paulo" },
-        State: { abbreviation: "SP" }
-      };
-    }
-  }
+}
 
 function gerarDataNascimento() {
   const inicio = new Date(1960, 0, 1).getTime();
@@ -110,19 +110,19 @@ function gerarTelefone() {
 
 function gerarEmail(nome, sobrenome) {
   const dominios = ["teste.com", "test.com"];
-  
+
   // Remove acentos e converte para minúsculas
   const removerAcentos = (str) => str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-  
+
   // Remove pontuação e espaços, converte para minúsculas
   const limparNome = (str) => removerAcentos(str.toLowerCase()).replace(/[^\w\s]/gi, '').replace(/\s+/g, '');
-  
+
   const nomeEmail = limparNome(nome);
   const sobrenomeEmail = limparNome(sobrenome);
-  
+
   const numeroAleatorio = Math.floor(Math.random() * 100);
   const dominio = dominios[Math.floor(Math.random() * dominios.length)];
-  
+
   return `${nomeEmail}${sobrenomeEmail}${numeroAleatorio}@${dominio}`;
 }
 
@@ -144,11 +144,11 @@ function gerarRazaoSocial() {
   const prefixos = ["Indústria", "Comércio", "Serviços", "Tecnologia", "Consultoria"];
   const sufixos = ["Ltda", "S.A.", "MEI", "EIRELI", "Sociedade Simples"];
   const nomes = ["Silva", "Santos", "Oliveira", "Ferreira", "Rodrigues", "Almeida", "Pereira", "Lima"];
-  
+
   const prefixo = prefixos[Math.floor(Math.random() * prefixos.length)];
   const nome = nomes[Math.floor(Math.random() * nomes.length)];
   const sufixo = sufixos[Math.floor(Math.random() * sufixos.length)];
-  
+
   return `${prefixo} ${nome} ${sufixo}`;
 }
 
@@ -161,17 +161,25 @@ function gerarNomeFantasia() {
 }
 
 function gerarCNPJ() {
-  const gerarDigito = (digitos) => {
-    let soma = digitos.reduce((acc, cur, idx) => acc + cur * ((idx % 8) + 2), 0);
-    let resto = soma % 11;
+  const calcularDigito = (nums, pesos) => {
+    const soma = nums.reduce((acc, num, i) => acc + num * pesos[i], 0);
+    const resto = soma % 11;
     return resto < 2 ? 0 : 11 - resto;
   };
 
-  const numeros = Array(12).fill().map(() => Math.floor(Math.random() * 10));
-  const digito1 = gerarDigito(numeros);
-  const digito2 = gerarDigito([...numeros, digito1]);
+  const gerarNumerosBase = () => {
+    return Array.from({ length: 8 }, () => Math.floor(Math.random() * 10)).concat([0, 0, 0, 1]);
+  };
 
-  return [...numeros, digito1, digito2].join('').replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5');
+  const formatarCNPJ = (numeros) => {
+    return numeros.join('').replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5');
+  };
+
+  const numerosBase = gerarNumerosBase();
+  const digito1 = calcularDigito(numerosBase, [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]);
+  const digito2 = calcularDigito([...numerosBase, digito1], [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]);
+
+  return formatarCNPJ([...numerosBase, digito1, digito2]);
 }
 
 function gerarInscricaoEstadual() {
@@ -207,8 +215,8 @@ function gerarReferenciasBancarias() {
 }
 
 async function preencherFormulario(opcoes) {
-    const dados = await gerarDadosFicticios();
-  
+  const dados = await gerarDadosFicticios();
+
   const campos = {
     nomeCompleto: ['Nome Completo'],
     dataNascimento: ['nascimento', 'data nascimento', 'data de nascimento'],
@@ -233,7 +241,7 @@ async function preencherFormulario(opcoes) {
     razaoSocial: ['razão social'],
     nomeFantasia: ['nome fantasia'],
     cnpj: ['cnpj'],
-    ufInscricaoEstadual: ['uf inscrição estadual', 'ie uf'],
+    ufInscricaoEstadual: ['UF Inscrição Estadual', 'uf inscrição estadual', 'ie uf'],
     inscricaoEstadual: ['inscrição estadual', 'ie'],
     inscricaoMunicipal: ['inscrição municipal', 'im'],
     fundacao: ['fundação', 'data de fundação'],
@@ -251,8 +259,7 @@ async function preencherFormulario(opcoes) {
       if (input) {
         preencherInput(input, dados[campo], campo);
         console.log(`Campo ${campo} preenchido com: ${dados[campo]}`);
-        
-        // Se for o CEP, aguarda um pouco e tenta preencher os campos de endereço
+
         if (campo === 'cep') {
           setTimeout(() => preencherCamposEndereco(dados), 1000);
         }
@@ -263,25 +270,59 @@ async function preencherFormulario(opcoes) {
   }
 }
 
+function encontrarInput(termos, campoAtual) {
+  for (const termo of termos) {
+    const seletores = [
+      `input[placeholder*="${termo}" i]`,
+      `input[aria-label*="${termo}" i]`,
+      `input[name*="${termo}" i]`,
+      `input[id*="${termo}" i]`,
+      `input.q-field__native[type="text"]`,
+      `input.q-field__native[type="tel"]`,
+      `input[data-test*="${termo}" i]`,
+      `input[role="combobox"][aria-label*="${termo}" i]`
+    ];
+
+    for (const seletor of seletores) {
+      const input = document.querySelector(seletor);
+      if (input) {
+        return input;
+      }
+    }
+  }
+  return null;
+}
+
+function preencherInput(input, valor, campo) {
+  if (input.value && input.value.trim() !== '') {
+    console.log(`Campo ${campo} já preenchido com: ${input.value}. Pulando...`);
+    return;
+  }
+
+  input.value = valor;
+  input.dispatchEvent(new Event('input', { bubbles: true }));
+  input.dispatchEvent(new Event('change', { bubbles: true }));
+
+  console.log(`Valor definido para ${campo}: ${valor}`);
+}
+
 async function adicionarImagemPadrao() {
   const inputFiles = document.querySelectorAll('.q-uploader__input[type="file"]');
   if (inputFiles.length > 0) {
-      const response = await fetch(chrome.runtime.getURL('images/padrao.png'));
-      const blob = await response.blob();
-      const file = new File([blob], 'imagem_padrao.png', { type: 'image/png' });
+    const response = await fetch(chrome.runtime.getURL('images/padrao.png'));
+    const blob = await response.blob();
+    const file = new File([blob], 'imagem_padrao.png', { type: 'image/png' });
 
-      const dataTransfer = new DataTransfer();
-      dataTransfer.items.add(file);
+    const dataTransfer = new DataTransfer();
+    dataTransfer.items.add(file);
 
-      inputFiles.forEach(inputFile => {
-          inputFile.files = dataTransfer.files;
-
-          // Disparar eventos para que o Q-Uploader reconheça o arquivo
-          inputFile.dispatchEvent(new Event('change', { bubbles: true }));
-          console.log('Imagem padrão adicionada ao Q-Uploader');
-      });
+    inputFiles.forEach(inputFile => {
+      inputFile.files = dataTransfer.files;
+      inputFile.dispatchEvent(new Event('change', { bubbles: true }));
+      console.log('Imagem padrão adicionada ao Q-Uploader');
+    });
   } else {
-      console.log('Input de arquivo não encontrado');
+    console.log('Input de arquivo não encontrado');
   }
 }
 
@@ -297,7 +338,7 @@ function encontrarInput(termos, campoAtual) {
     for (const qField of qFields) {
       const label = qField.querySelector('.q-field__label');
       const input = qField.querySelector('input.q-field__native');
-      
+
       if (input && !camposPreenchidos.has(input) && (
         (label && matchText(label.textContent, termo)) ||
         (input.getAttribute('aria-label') && matchText(input.getAttribute('aria-label'), termo))
@@ -310,12 +351,12 @@ function encontrarInput(termos, campoAtual) {
 
     // Seletores anteriores como fallback
     const seletores = [
+      `input[placeholder*="${termo}" i]`,
       `input[aria-label="${termo}" i]`,
       `input[placeholder="${termo}" i]`,
       `input[name="${termo}" i]`,
       `input[id="${termo}" i]`,
       `input[aria-label*="${termo}" i]`,
-      `input[placeholder*="${termo}" i]`,
       `input[name*="${termo}" i]`,
       `input[id*="${termo}" i]`,
       `input.q-field__native[type="text"]`,
@@ -461,7 +502,7 @@ function limparFormulario() {
     razaoSocial: ['razão social'],
     nomeFantasia: ['nome fantasia'],
     cnpj: ['cnpj'],
-    ufInscricaoEstadual: ['uf inscrição estadual', 'ie uf'],
+    ufInscricaoEstadual: ['UF Inscrição Estadual', 'uf inscrição estadual', 'ie uf'],
     inscricaoEstadual: ['inscrição estadual', 'ie'],
     inscricaoMunicipal: ['inscrição municipal', 'im'],
     fundacao: ['fundação', 'data de fundação'],
@@ -476,7 +517,7 @@ function limparFormulario() {
       input.dispatchEvent(new Event('input', { bubbles: true }));
       input.dispatchEvent(new Event('change', { bubbles: true }));
       input.dispatchEvent(new Event('blur', { bubbles: true }));
-      
+
       if (input._valueTracker) {
         input._valueTracker.setValue('');
       }
@@ -486,15 +527,15 @@ function limparFormulario() {
 }
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    if (request.action === "preencher") {
-      preencherFormulario(request.opcoes).then(() => {
-        sendResponse({status: "Formulário preenchido com sucesso"});
-      }).catch(error => {
-        sendResponse({status: "Erro ao preencher formulário", error: error.message});
-      });
-      return true; // Indica que a resposta será enviada assincronamente
-    } else if (request.action === "limpar") {
-      limparFormulario();
-      sendResponse({status: "Formulário limpo com sucesso"});
-    }
-  });
+  if (request.action === "preencher") {
+    preencherFormulario(request.opcoes).then(() => {
+      sendResponse({ status: "Formulário preenchido com sucesso" });
+    }).catch(error => {
+      sendResponse({ status: "Erro ao preencher formulário", error: error.message });
+    });
+    return true; // Indica que a resposta será enviada assincronamente
+  } else if (request.action === "limpar") {
+    limparFormulario();
+    sendResponse({ status: "Formulário limpo com sucesso" });
+  }
+});
