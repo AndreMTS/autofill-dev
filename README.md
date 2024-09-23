@@ -4,7 +4,7 @@
 
 O Preenchedor de Formulários é uma extensão para navegadores baseados em Chromium que automatiza o preenchimento de formulários com dados fictícios. Esta ferramenta é ideal para desenvolvedores e testadores que precisam preencher formulários rapidamente com dados realistas para fins de teste.
 
-<img src="https://i.ibb.co/5626f0C/amostra-addon.jpg" alt="Imagem do Gerador de Senhas" width="300" height="400"/>
+<img src="https://i.ibb.co/M1v81Gn/amostra-addon2.jpg" alt="Imagem do Gerador de Senhas" width="400" height="400"/>
 
 ## Funcionalidades
 
