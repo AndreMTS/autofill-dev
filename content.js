@@ -241,6 +241,10 @@ async function preencherFormulario(opcoes) {
     referenciasBancarias: ['referências bancárias']
   };
 
+  if (opcoes.imagemPadrao) {
+    await adicionarImagemPadrao();
+  }
+
   for (const [campo, termos] of Object.entries(campos)) {
     if (opcoes[campo]) {
       const input = encontrarInput(termos, campo);
@@ -256,6 +260,28 @@ async function preencherFormulario(opcoes) {
         console.log(`Campo ${campo} não encontrado`);
       }
     }
+  }
+}
+
+async function adicionarImagemPadrao() {
+  const inputFiles = document.querySelectorAll('.q-uploader__input[type="file"]');
+  if (inputFiles.length > 0) {
+      const response = await fetch(chrome.runtime.getURL('images/padrao.png'));
+      const blob = await response.blob();
+      const file = new File([blob], 'imagem_padrao.png', { type: 'image/png' });
+
+      const dataTransfer = new DataTransfer();
+      dataTransfer.items.add(file);
+
+      inputFiles.forEach(inputFile => {
+          inputFile.files = dataTransfer.files;
+
+          // Disparar eventos para que o Q-Uploader reconheça o arquivo
+          inputFile.dispatchEvent(new Event('change', { bubbles: true }));
+          console.log('Imagem padrão adicionada ao Q-Uploader');
+      });
+  } else {
+      console.log('Input de arquivo não encontrado');
   }
 }
 

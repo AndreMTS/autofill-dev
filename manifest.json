@@ -32,7 +32,7 @@
     ],
     "web_accessible_resources": [
       {
-        "resources": ["css/styles.css"],
+        "resources": ["css/styles.css","images/padrao.png"],
         "matches": ["<all_urls>"]
       }
     ]

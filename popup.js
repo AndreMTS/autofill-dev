@@ -22,7 +22,8 @@ document.getElementById('preencher').addEventListener('click', () => {
         inscricaoMunicipal: document.getElementById('inscricaoMunicipal').checked,
         fundacao: document.getElementById('fundacao').checked,
         referenciasComerciais: document.getElementById('referenciasComerciais').checked,
-        referenciasBancarias: document.getElementById('referenciasBancarias').checked
+        referenciasBancarias: document.getElementById('referenciasBancarias').checked,
+        imagemPadrao: document.getElementById('imagemPadrao').checked // Nova opção
     };
 
     chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
