@@ -19,6 +19,10 @@ async function gerarDadosFicticios() {
   const nome = nomes[Math.floor(Math.random() * nomes.length)];
   const sobrenome = sobrenomes[Math.floor(Math.random() * sobrenomes.length)];
   const nomeCompleto = `${nome} ${sobrenome}`;
+  const nomeContato = nomes[Math.floor(Math.random() * nomes.length)];
+  const sobrenomeContato =
+    sobrenomes[Math.floor(Math.random() * sobrenomes.length)];
+  const nomeCompletoContato = `${nomeContato} ${sobrenomeContato}`;
 
   const endereco = await buscarCepAleatorio();
 
@@ -51,7 +55,8 @@ async function gerarDadosFicticios() {
     referenciasBancarias: gerarReferenciasBancarias(),
     bairro: endereco.district,
     cidade: endereco.City.name,
-    uf: endereco.State.abbreviation
+    uf: endereco.State.abbreviation,
+    nome: nomeCompletoContato,
   };
 }
 
@@ -246,7 +251,8 @@ async function preencherFormulario(opcoes) {
     inscricaoMunicipal: ['inscrição municipal', 'im'],
     fundacao: ['fundação', 'data de fundação'],
     referenciasComerciais: ['referências comerciais'],
-    referenciasBancarias: ['referências bancárias']
+    referenciasBancarias: ['referências bancárias'],
+    nome: ['Nome', 'nome'],
   };
 
   if (opcoes.imagemPadrao) {
@@ -255,42 +261,23 @@ async function preencherFormulario(opcoes) {
 
   for (const [campo, termos] of Object.entries(campos)) {
     if (opcoes[campo]) {
-      const input = encontrarInput(termos, campo);
-      if (input) {
-        preencherInput(input, dados[campo], campo);
-        console.log(`Campo ${campo} preenchido com: ${dados[campo]}`);
+      const inputs = encontrarInput(termos, campo);
+      if (inputs.length > 0) {
+        inputs.forEach((input) => {
+          if (input) {
+            preencherInput(input, dados[campo], campo);
+            console.log(`Campo ${campo} preenchido com: ${dados[campo]}`);
 
-        if (campo === 'cep') {
-          setTimeout(() => preencherCamposEndereco(dados), 1000);
-        }
+            if (campo === 'cep') {
+              setTimeout(() => preencherCamposEndereco(dados), 1000);
+            }
+          }
+        });
       } else {
         console.log(`Campo ${campo} não encontrado`);
       }
     }
   }
-}
-
-function encontrarInput(termos, campoAtual) {
-  for (const termo of termos) {
-    const seletores = [
-      `input[placeholder*="${termo}" i]`,
-      `input[aria-label*="${termo}" i]`,
-      `input[name*="${termo}" i]`,
-      `input[id*="${termo}" i]`,
-      `input.q-field__native[type="text"]`,
-      `input.q-field__native[type="tel"]`,
-      `input[data-test*="${termo}" i]`,
-      `input[role="combobox"][aria-label*="${termo}" i]`
-    ];
-
-    for (const seletor of seletores) {
-      const input = document.querySelector(seletor);
-      if (input) {
-        return input;
-      }
-    }
-  }
-  return null;
 }
 
 function preencherInput(input, valor, campo) {
@@ -326,7 +313,30 @@ async function adicionarImagemPadrao() {
   }
 }
 
-function encontrarInput(termos, campoAtual) {
+function encontrarInput(termos) {
+  const inputs = [];
+  // Buscar inputs que correspondem aos termos associados ao campo
+  termos.forEach((termo) => {
+    document.querySelectorAll('input, textarea, select').forEach((input) => {
+      if (
+        input.name.toLowerCase().includes(termo.toLowerCase()) ||
+        input.id.toLowerCase().includes(termo.toLowerCase()) ||
+        input.placeholder.toLowerCase().includes(termo.toLowerCase()) ||
+        (input.labels &&
+          Array.from(input.labels).some((label) =>
+            label.innerText.toLowerCase().includes(termo.toLowerCase())
+          ))
+      ) {
+        inputs.push(input);
+      }
+    });
+  });
+
+  // Retornar a lista de inputs encontrados
+  return inputs;
+}
+
+function encontrarInputEndereco(termos, campoAtual) {
   const camposPreenchidos = new Set();
 
   for (const termo of termos) {
@@ -469,7 +479,7 @@ function preencherCamposEndereco(dados) {
   };
 
   for (const [campo, termos] of Object.entries(campos)) {
-    const input = encontrarInput(termos, campo);
+    const input = encontrarInputEndereco(termos, campo);
     if (input && (!input.value || input.value.trim() === '')) {
       preencherInput(input, dados[campo], campo);
       console.log(`Campo ${campo} preenchido com: ${dados[campo]}`);
@@ -511,7 +521,7 @@ function limparFormulario() {
   };
 
   for (const termos of Object.values(campos)) {
-    const input = encontrarInput(termos, '');
+    const input = encontrarInputEndereco(termos, '');
     if (input) {
       input.value = '';
       input.dispatchEvent(new Event('input', { bubbles: true }));

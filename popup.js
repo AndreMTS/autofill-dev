@@ -4,6 +4,7 @@ document.getElementById('preencher').addEventListener('click', () => {
         nomeFantasia: document.getElementById('nomeFantasia').checked,
         cnpj: document.getElementById('cnpj').checked,
         nomeCompleto: document.getElementById('nomeCompleto').checked,
+        nome: document.getElementById('nome').checked,
         dataNascimento: document.getElementById('dataNascimento').checked,
         nomePai: document.getElementById('nomePai').checked,
         nomeMae: document.getElementById('nomeMae').checked,
